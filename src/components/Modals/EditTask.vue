@@ -1,6 +1,6 @@
 <template>
 <q-card>
-  <modal-header>タスク追加</modal-header>
+  <modal-header>タスク編集</modal-header>
   <q-form
     @submit="onSubmit"
     class="q-gutter-md"
@@ -30,18 +30,19 @@
   import ModalDueTime from './Shared/ModalDueTime'
   import ModalButtons from './Shared/ModalButtons'
   export default {
+    props: ['task', 'id'],
     data() {
       return {
         taskToSubmit: {
-          name: '',
-          dueDate: '',
-          dueTime: '',
+          name: this.task.name,
+          dueDate: this.task.dueDate,
+          dueTime: this.task.dueTime,
           completed: false,
         }
       }
     },
     methods: {
-      ...mapActions('tasks', ['addTask']),
+      ...mapActions('tasks', ['updateTask']),
       onSubmit() {
         this.$refs.modalTaskName.$refs.name.validate()
         if (!this.$refs.modalTaskName.$refs.name.hasError) {
@@ -49,7 +50,10 @@
         }
       },
       submitTask() {
-        this.addTask(this.taskToSubmit)
+        this.updateTask({
+          id: this.id,
+          updates: this.taskToSubmit
+        })
         this.$emit('close')
       },
     },
