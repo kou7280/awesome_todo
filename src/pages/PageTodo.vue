@@ -1,10 +1,22 @@
 <template>
   <q-page class="q-pa-md">
+    <div class="q-mb-lg row">
+      <search></search>
+    </div>
+    <q-banner 
+      v-if="!Object.keys(tasksFiltered).length"
+      inline-actions
+      class="text-white bg-red">
+      <template v-slot:avatar>
+        <q-icon name="report_problem" color="white" />
+      </template>
+      検索結果が見つかりませんでした
+    </q-banner>
     <no-tasks
-      v-if="!Object.keys(tasksTodo).length"></no-tasks>
+      v-if="!Object.keys(tasksTodo).length && !search"></no-tasks>
     <tasks-todo
-      :tasksTodo="tasksTodo"
-      v-else></tasks-todo>
+      v-if="Object.keys(tasksTodo).length"
+      :tasksTodo="tasksTodo"></tasks-todo>
 
     <tasks-completed
       :tasksCompleted="tasksCompleted"
@@ -27,11 +39,12 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapState } from 'vuex'
   import AddTask from 'components/Modals/AddTask'
   import TasksTodo from 'components/Tasks/TasksTodo'
   import TasksCompleted from 'components/Tasks/TasksCompleted'
   import NoTasks from 'components/Tasks/NoTasks'
+  import Search from 'components/Tasks/Tools/Search'
   export default {
     data() {
       return {
@@ -39,7 +52,8 @@
       }
     },
     computed: {
-      ...mapGetters('tasks', ['tasksTodo', 'tasksCompleted'])
+      ...mapGetters('tasks', ['tasksTodo', 'tasksCompleted', 'tasksFiltered']),
+      ...mapState('tasks', ['search']),
     },
     mounted() {
       this.$root.$on('showAddTask', () => {
@@ -50,7 +64,8 @@
       AddTask,
       TasksTodo,
       TasksCompleted,
-      NoTasks
+      NoTasks,
+      Search,
     }
   }
 </script>
