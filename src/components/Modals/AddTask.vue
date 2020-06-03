@@ -24,12 +24,9 @@
 
 <script>
   import { mapActions } from 'vuex'
-  import ModalHeader from './Shared/ModalHeader'
-  import ModalTaskName from './Shared/ModalTaskName'
-  import ModalDueDate from './Shared/ModalDueDate'
-  import ModalDueTime from './Shared/ModalDueTime'
-  import ModalButtons from './Shared/ModalButtons'
+  import mixinAddEditTask from 'src/mixins/mixin-add-edit-task'
   export default {
+    mixins: [mixinAddEditTask],
     data() {
       return {
         taskToSubmit: {
@@ -42,23 +39,10 @@
     },
     methods: {
       ...mapActions('tasks', ['addTask']),
-      onSubmit() {
-        this.$refs.modalTaskName.$refs.name.validate()
-        if (!this.$refs.modalTaskName.$refs.name.hasError) {
-          this.submitTask()
-        }
-      },
       submitTask() {
         this.addTask(this.taskToSubmit)
         this.$emit('close')
       },
-    },
-    components: {
-      ModalHeader,
-      ModalTaskName,
-      ModalDueDate,
-      ModalDueTime,
-      ModalButtons,
     },
   }
 </script>
